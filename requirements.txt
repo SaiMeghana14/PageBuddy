@@ -1,0 +1,10 @@
+streamlit
+requests
+beautifulsoup4
+openai
+scikit-learn
+numpy
+nltk
+markdown-it-py
+Pillow
+streamlit-ace

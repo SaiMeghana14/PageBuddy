@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>PageBuddy → Stream</title>
+  <style>
+    body{font-family:Inter,Arial;background:#031026;color:#e7fbff;padding:12px;width:320px}
+    button{background:#2ef0ff;border:none;padding:8px 10px;border-radius:8px;font-weight:700;color:#001425}
+    #nova {width:100%;display:flex;align-items:center;gap:8px}
+    img{width:64px;height:64px}
+    select, button {margin-top:8px}
+  </style>
+</head>
+<body>
+  <div id="nova">
+    <img src="data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect rx='12' width='64' height='64' fill='%23021028'/><text x='10' y='40' font-size='20' fill='%23cfeeff'>NOVA</text></svg>" />
+    <div>
+      <div style="font-weight:800">PageBuddy → NOVA</div>
+      <div style="font-size:12px;color:#bfeffd">Send current tab</div>
+    </div>
+  </div>
+  <select id="lang">
+    <option>English</option>
+    <option>Hindi</option>
+    <option>Telugu</option>
+  </select>
+  <button id="send">Send current page</button>
+
+  <script>
+    // change this when deployed
+    const TARGET_URL = "http://localhost:6006/chrome-page";
+
+    document.getElementById("send").addEventListener("click", async () => {
+      const [tab] = await chrome.tabs.query({active:true,currentWindow:true});
+      chrome.scripting.executeScript({
+        target:{tabId: tab.id},
+        func: () => {
+          const main = document.querySelector('main') || document.querySelector('article') || document.body;
+          return main.innerText;
+        }
+      }, async (results) => {
+        const text = (results && results[0] && results[0].result) || document.body.innerText;
+        const lang = document.getElementById('lang').value;
+        try {
+          const res = await fetch(TARGET_URL, {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({content: text, url: tab.url, language: lang})
+          });
+          if (res.ok) {
+            alert("✅ Sent to PageBuddy! Check Streamlit app.");
+          } else {
+            alert("Failed to send: " + res.statusText);
+          }
+        } catch(e) {
+          alert("Error sending: " + e);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

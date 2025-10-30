@@ -14,8 +14,7 @@ except Exception as e:
     st.error(f"Error importing backend component: {e}")
 
 print("Gemini backend loaded ✅")
-b = tts_create_audio_bytes("Hello from PageBuddy", language_code="en-IN")
-open("test.mp3", "wb").write(b)
+print("PageBuddy backend ready ✅")
 
 # ---------- Constants ----------
 PAGEBUDDY_PORT = int(os.environ.get("PAGEBUDDY_PORT", "6006"))

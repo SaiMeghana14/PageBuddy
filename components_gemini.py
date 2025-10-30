@@ -64,7 +64,18 @@ def load_service_account_from_streamlit_secrets(st_secrets):
         return True
     except Exception:
         return False
-
+        
+def fetch_url_text(url: str) -> str:
+    """Extract readable text from a webpage"""
+    try:
+        r = requests.get(url, timeout=6)
+        soup = BeautifulSoup(r.text, "html.parser")
+        # Keep visible text only
+        for tag in soup(["script", "style", "noscript"]):
+            tag.extract()
+        return soup.get_text(separator="\n", strip=True)
+    except Exception:
+        return ""
 # ----------------- Gemini wrapper -----------------
 def _gemini_generate_text(prompt, model="gemini-1.5-flash", max_output_tokens=400, temperature=0.2):
     """Return string or None if unavailable."""

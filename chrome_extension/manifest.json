@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "PageBuddy Connector",
+  "version": "1.0",
+  "permissions": ["activeTab","scripting","storage"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Send to PageBuddy"
+  }
+}

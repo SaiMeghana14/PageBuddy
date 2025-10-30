@@ -1,5 +1,5 @@
 import os, json, re, time
-import requests
+import requests, base64
 from bs4 import BeautifulSoup
 import nltk
 from nltk.tokenize import sent_tokenize
@@ -17,7 +17,7 @@ try:
 except Exception:
     GCP_AUDIO_AVAILABLE = False
 
-# Gemini client options: try google.generativeai then vertexai
+# Gemini client detection
 GENAI = None
 try:
     import google.generativeai as genai
@@ -28,6 +28,11 @@ except Exception:
         GENAI = "vertexai"
     except Exception:
         GENAI = None
+
+# unify name for client
+GEN_CLIENT = GENAI
+
+nltk.download('punkt', quiet=True)
 # Optional GCP TTS/STT clients
 GCP_AUDIO = False
 try:
@@ -253,6 +258,7 @@ def export_to_pptx(title, bullets, actions, filename="pagebuddy_export.pptx"):
     slide = prs.slides.add_slide(slide_layout)
     slide.shapes.title.text = "Key points"
     body = slide.shapes.placeholders[1].text_frame
+    body.clear()
     for b in bullets:
         p = body.add_paragraph()
         p.text = b

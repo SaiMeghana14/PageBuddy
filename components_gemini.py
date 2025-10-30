@@ -8,7 +8,6 @@ import numpy as np
 from io import BytesIO
 
 # Audio
-import pyttsx3
 try:
     from google.cloud import texttospeech, speech
     GCP_AUDIO_AVAILABLE = True
@@ -30,7 +29,6 @@ except Exception:
 # unify name for client
 GEN_CLIENT = GENAI
 
-nltk.download('punkt', quiet=True)
 # Optional GCP TTS/STT clients
 GCP_AUDIO = False
 try:
@@ -243,37 +241,6 @@ def stt_from_uploaded_bytes(audio_bytes, language="en-IN"):
         return r.recognize_google(audio)
     except Exception as e:
         return f"ERROR_STT:{e}"
-
-# ----------------- simple PPTX export -----------------
-def export_to_pptx(title, bullets, actions, filename="pagebuddy_export.pptx"):
-    from pptx import Presentation
-    from pptx.util import Pt
-    prs = Presentation()
-    slide_layout = prs.slide_layouts[0]
-    slide = prs.slides.add_slide(slide_layout)
-    slide.shapes.title.text = title
-    slide_layout = prs.slide_layouts[1]
-    slide = prs.slides.add_slide(slide_layout)
-    slide.shapes.title.text = "Key points"
-    body = slide.shapes.placeholders[1].text_frame
-    body.clear()
-    for b in bullets:
-        p = body.add_paragraph()
-        p.text = b
-        p.level = 0
-        p.font.size = Pt(18)
-    slide = prs.slides.add_slide(slide_layout)
-    slide.shapes.title.text = "Action items"
-    body = slide.shapes.placeholders[1].text_frame
-    for a in actions:
-        p = body.add_paragraph()
-        p.text = a
-        p.level = 0
-        p.font.size = Pt(18)
-    bio = BytesIO()
-    prs.save(bio)
-    bio.seek(0)
-    return bio
 
 # ----------------- tiny lipsync helper (estimate durations) -----------------
 def estimate_audio_duration_seconds(text):

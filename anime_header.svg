@@ -1,11 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
-  <rect rx="16" width="120" height="120" fill="#0d1026"/>
+  <rect rx="20" width="120" height="120" fill="#031026"/>
   <g transform="translate(12,12)">
-    <circle cx="48" cy="30" r="24" fill="#ff6ec7" opacity="0.92"/>
-    <circle cx="24" cy="72" r="18" fill="#7be1ff" opacity="0.9"/>
-    <path d="M10 90 C30 60, 66 60, 86 90" stroke="#ffffff20" stroke-width="6" fill="none" stroke-linecap="round"/>
-    <g transform="translate(8,8)">
-      <text x="8" y="50" font-family="Verdana" font-size="14" fill="white" opacity="0.95">PB</text>
-    </g>
+    <circle cx="48" cy="30" r="22" fill="#2ef0ff" opacity="0.95"/>
+    <path d="M12 86 C30 48, 72 48, 98 86" stroke="#6ed0ff22" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <text x="14" y="56" font-family="Verdana" font-size="20" fill="#cfeeff">PB</text>
   </g>
 </svg>

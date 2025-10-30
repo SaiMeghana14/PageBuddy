@@ -385,6 +385,6 @@ if enable_voice_input:
       status.innerText = "Wake word active (listening)...";
     };
     </script>
-    """, unsafe_allow_html=True)
+     """, unsafe_allow_html=True)
 
 st.markdown("<div style='height:24px'></div>", unsafe_allow_html=True)

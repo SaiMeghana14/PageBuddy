@@ -1,10 +1,14 @@
 streamlit
 requests
 beautifulsoup4
-openai
+nltk
 scikit-learn
 numpy
-nltk
-markdown-it-py
+python-pptx
 Pillow
+google-generative-ai
+google-cloud-texttospeech
+SpeechRecognition
+pydub
+pyttsx3
 streamlit-ace

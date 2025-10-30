@@ -3,7 +3,7 @@
   --card: rgba(255,255,255,0.03);
   --accent: #2ef0ff;
   --accent2: #7be1ff;
-  --glass: rgba(255,255,255,0.04);
+  --neon: #7bffec;
 }
 
 body { background:var(--bg1); color:#d8f6ff; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto; }
@@ -15,5 +15,18 @@ body { background:var(--bg1); color:#d8f6ff; font-family: Inter, system-ui, -app
 .chat-left { background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01)); padding:10px 14px; border-radius:12px 12px 12px 2px; margin:6px 0; }
 .chat-right { background: linear-gradient(90deg, rgba(46,240,255,0.06), rgba(123,225,255,0.03)); padding:10px 14px; border-radius:12px 12px 2px 12px; margin:6px 0; text-align:right; }
 .neon-btn { background: linear-gradient(90deg, var(--accent), var(--accent2)); color:#001425 !important; font-weight:700; padding:8px 12px; border-radius:10px; border:none; }
-.holo-avatar { border-radius:12px; box-shadow: 0 10px 40px rgba(46,240,255,0.06); border: 1px solid rgba(123,225,255,0.06); }
-.small-meta { color:#9fdfff; font-size:12px; }
+.holo-avatar { border-radius:12px; box-shadow: 0 10px 40px rgba(46,240,255,0.06); border: 1px solid rgba(123,225,255,0.06); transition: transform .25s ease, filter .3s ease;}
+.avatar-listening { transform: translateY(0); filter: drop-shadow(0 12px 30px rgba(46,240,255,0.06)); }
+.avatar-happy { transform: translateY(-4px) scale(1.02); filter: drop-shadow(0 18px 40px rgba(126,255,220,0.12)); }
+.avatar-concerned { transform: translateY(2px) rotate(-1deg); filter: contrast(.9) saturate(.9); }
+.avatar-battle { filter: drop-shadow(0 30px 60px rgba(255,20,50,0.12)); transform: scale(1.04); border-color: rgba(255,20,50,0.12); }
+
+.lipsync { animation: lips .45s infinite; transform-origin: center center; }
+@keyframes lips {
+  0%{ transform: scaleY(1); }
+  50%{ transform: scaleY(0.7); }
+  100%{ transform: scaleY(1); }
+}
+
+/* anime reaction panels */
+.reaction-panel { position: absolute; right: 12px; top: -8px; background: rgba(0,0,0,0.35); border-radius:8px; padding:6px 10px; border:1px solid rgba(255,255,255,0.04); color:#bfeffd; font-size:13px; }

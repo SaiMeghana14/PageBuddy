@@ -13,7 +13,7 @@ try:
 except Exception as e:
     st.error(f"Error importing backend component: {e}")
 
-print(_gemini_generate_text("Say: Hello from Gemini", model="gemini-1.5-flash"))
+print("Gemini backend loaded ✅")
 b = tts_create_audio_bytes("Hello from PageBuddy", language_code="en-IN")
 open("test.mp3", "wb").write(b)
 

@@ -2,58 +2,90 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>PageBuddy → Stream</title>
+  <title>PageBuddy → NOVA</title>
   <style>
-    body{font-family:Inter,Arial;background:#031026;color:#e7fbff;padding:12px;width:320px}
-    button{background:#2ef0ff;border:none;padding:8px 10px;border-radius:8px;font-weight:700;color:#001425}
-    #nova {width:100%;display:flex;align-items:center;gap:8px}
-    img{width:64px;height:64px}
-    select, button {margin-top:8px}
+    :root {
+      --bg:#021028; --card:rgba(255,255,255,0.03); --accent:#2ef0ff; --accent2:#7be1ff;
+    }
+    body{font-family:Inter,Arial;background:var(--bg);color:#e7fbff;padding:14px;width:340px}
+    .card{background:var(--card);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);position:relative}
+    .holo{display:flex;align-items:center;gap:10px}
+    img.holo-img{width:64px;height:64px; border-radius:12px; filter: drop-shadow(0 10px 30px rgba(46,240,255,0.06)); transform-origin:center;}
+    /* floating animation */
+    @keyframes floaty {0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+    img.holo-img{animation: floaty 3s ease-in-out infinite;}
+    .reaction{position:absolute;right:12px;top:-10px;background:rgba(0,0,0,0.35);padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);color:#bfeffd;font-size:13px;display:none}
+    .send-btn{background:linear-gradient(90deg,var(--accent),var(--accent2));border:none;padding:8px 10px;border-radius:10px;font-weight:700;color:#001425;width:100%}
+    select{margin-top:8px;padding:6px;border-radius:8px;border:none}
+    .small{font-size:12px;color:#bfeffd;margin-top:6px}
   </style>
 </head>
 <body>
-  <div id="nova">
-    <img src="data:image/svg+xml;utf8,<?xml version='1.0'?><svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect rx='12' width='64' height='64' fill='%23021028'/><text x='10' y='40' font-size='20' fill='%23cfeeff'>NOVA</text></svg>" />
-    <div>
-      <div style="font-weight:800">PageBuddy → NOVA</div>
-      <div style="font-size:12px;color:#bfeffd">Send current tab</div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="display:flex;gap:10px;align-items:center">
+        <img class="holo-img" id="nova_img" src="avatar/nova_idle.svg" />
+        <div>
+          <div style="font-weight:800">PageBuddy — NOVA</div>
+          <div style="font-size:12px;color:#bfeffd">Send current tab to Streamlit</div>
+        </div>
+      </div>
+      <div class="reaction" id="reaction">🙂</div>
+    </div>
+
+    <div style="margin-top:10px">
+      <select id="lang"><option>English</option><option>Hindi</option><option>Telugu</option></select>
+      <button id="send" class="send-btn">Send current page</button>
+      <div class="small">Tip: Use NOVA to auto-summarize & create flashcards</div>
     </div>
   </div>
-  <select id="lang">
-    <option>English</option>
-    <option>Hindi</option>
-    <option>Telugu</option>
-  </select>
-  <button id="send">Send current page</button>
 
   <script>
-    // change this when deployed
-    const TARGET_URL = "http://localhost:6006/chrome-page";
+    const TARGET_URL = "http://localhost:6006/chrome-page"; // change when deployed
+    const sendBtn = document.getElementById('send');
+    const img = document.getElementById('nova_img');
+    const reaction = document.getElementById('reaction');
 
-    document.getElementById("send").addEventListener("click", async () => {
+    function showReaction(text, ms=1600) {
+      reaction.innerText = text;
+      reaction.style.display = 'block';
+      setTimeout(()=>{ reaction.style.display='none'; }, ms);
+    }
+
+    sendBtn.addEventListener('click', async () => {
       const [tab] = await chrome.tabs.query({active:true,currentWindow:true});
       chrome.scripting.executeScript({
-        target:{tabId: tab.id},
+        target:{tabId:tab.id},
         func: () => {
           const main = document.querySelector('main') || document.querySelector('article') || document.body;
-          return main.innerText;
+          return main.innerText || document.body.innerText || "";
         }
       }, async (results) => {
-        const text = (results && results[0] && results[0].result) || document.body.innerText;
+        const text = (results && results[0] && results[0].result) || "";
         const lang = document.getElementById('lang').value;
+        if (!text || text.trim().length < 20) {
+          showReaction("No main text detected");
+          img.src = "avatar/nova_thinking.svg";
+          return;
+        }
+        showReaction("Sending...");
+        img.src = "avatar/nova_excited.svg";
         try {
           const res = await fetch(TARGET_URL, {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({content: text, url: tab.url, language: lang})
+            body: JSON.stringify({content:text, url: tab.url, language: lang})
           });
           if (res.ok) {
-            alert("✅ Sent to PageBuddy! Check Streamlit app.");
+            showReaction("Sent ✅", 1400);
+            img.src = "avatar/nova_happy.svg";
           } else {
-            alert("Failed to send: " + res.statusText);
+            showReaction("Send failed");
+            img.src = "avatar/nova_battle.svg";
           }
         } catch(e) {
-          alert("Error sending: " + e);
+          showReaction("Error");
+          img.src = "avatar/nova_battle.svg";
         }
       });
     });

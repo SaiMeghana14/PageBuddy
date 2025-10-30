@@ -12,3 +12,11 @@ SpeechRecognition
 pydub
 pyttsx3
 streamlit-ace
+flask
+google-auth
+google-auth-oauthlib
+google-cloud-speech
+google-cloud-aiplatform
+protobuf
+uvicorn
+gunicorn

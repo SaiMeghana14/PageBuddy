@@ -91,12 +91,12 @@ def avatar_svg_html(state="listening", lipsync=False):
 # =========================
 # 😎 Anime Hologram Avatar (Emotion Engine)
 # =========================
-from components_gemini import avatar_svg
+from components_gemini import render_avatar
 
-if "avatar_state" not in st.session_state:
-    st.session_state.avatar_state = "listening"
+if "emotion" not in st.session_state:
+    st.session_state.emotion = "idle"  # idle, thinking, happy, excited
 
-avatar_html = avatar_svg(st.session_state.avatar_state)
+avatar_html = render_avatar(st.session_state.emotion)
 st.markdown(avatar_html, unsafe_allow_html=True)
 
 # Configure from Streamlit secrets if present
@@ -235,29 +235,33 @@ with right:
 
     prompt = st.text_input("Ask NOVA...", key="prompt")
     if st.button("Send"):
-        if not prompt.strip():
-            st.warning("Write a prompt.")
-        else:
-            append("user", prompt)
-            p = f"You are NOVA, a calm futuristic assistant. Respond in {lang} and style {style}.\nUser: {prompt}"
-            if memory_mode:
-                prefs = json.dumps(st.session_state.get("memory", {}))
-                p += f"\nUser preferences: {prefs}"
-            resp = _gemini_generate_text(p, model=model_choice, max_output_tokens=420)
-            if not resp:
-                resp = "Gemini not available — fallback: " + prompt[:240]
-            append("assistant", resp)
-            
-            # update avatar emotion
-            st.session_state["avatar_state"] = analyze_emotion(resp)
-            # show updated avatar and lipsync while speaking (if TTS enabled)
-            if enable_tts:
-                audio = tts_create_audio_bytes(resp, language_code={"English":"en-IN","Hindi":"hi-IN","Telugu":"te-IN"}.get(lang,"en-IN"))
-                if audio:
-                    st.audio(audio, format="audio/mp3")
-                    duration = estimate_audio_duration_seconds(resp)
-                    st.markdown(f"<script>const img=document.getElementById('nova_avatar'); if(img){{img.classList.add('lipsync'); setTimeout(()=>img.classList.remove('lipsync'),{int(duration*1000)});}}</script>", unsafe_allow_html=True)
-            st.experimental_rerun()
+    if not prompt.strip():
+        st.warning("Write a prompt.")
+    else:
+        append("user", prompt)
+
+        # 🚀 Avatar Thinking Mode
+        st.session_state.emotion = "thinking"
+        st.markdown(render_avatar(st.session_state.emotion), unsafe_allow_html=True)
+        st.write("Nova is thinking...")
+
+        from components_gemini import _gemini_generate_text
+        p = f"You are Nova, a hologram anime assistant. Reply in {lang} and style {style}. Keep concise.\n\nUser:\n{prompt}"
+        if memory_mode:
+            prefs = json.dumps(st.session_state["memory"])
+            p += f"\n\nUser preferences: {prefs}"
+                
+        res = _gemini_generate_text(p, model=model_choice, max_output_tokens=400)
+        if not res:
+            res = "Gemini not configured or not available. Fallback: " + prompt[:240]
+
+        append("assistant", res)
+
+        # Avatar Happy Mode after getting response
+        st.session_state.emotion = "happy"
+
+        st.experimental_rerun()
+
            
     st.markdown("</div>", unsafe_allow_html=True)
 if memory_mode:
@@ -305,8 +309,9 @@ if enable_voice_input:
               });
               const j = await res.json();
               if (j.text) {
-                // put transcription into Streamlit input via streamlit API not available; user can copy
-                alert("Transcription: " + j.text);
+                // copy transcription to clipboard for easy paste into prompt
+                try { await navigator.clipboard.writeText(j.text); } catch(e){}
+                alert("Transcription copied to clipboard:\\n" + j.text + "\\n\\n(Paste in PageBuddy prompt)");
               } else {
                 alert("Transcribe error: " + JSON.stringify(j));
               }
@@ -331,6 +336,22 @@ if enable_voice_input:
     };
 
     // Wake word via Web Speech API
+    st.markdown("""
+<script>
+(function(){
+  // This script attaches to your existing wake button id "pb-wake"
+  // If not present, create a small floating control
+  function ensureWakeControls(){
+    let wakeBtn = document.getElementById('pb-wake');
+    let status = document.getElementById('pb-status');
+    if (!wakeBtn) {
+      const container = document.createElement('div');
+      container.style.marginTop = '8px';
+      container.innerHTML = '<button id="pb-wake" class="neon-btn">Enable Wake Word (Hey Nova)</button><div id="pb-status" style="margin-top:8px;color:#9fdfff"></div>';
+      document.body.appendChild(container);
+      wakeBtn = document.getElementById('pb-wake');
+      status = document.getElementById('pb-status');
+    }
     let recognition;
     let wakeOn = false;
     wakeBtn.onclick = () => {
@@ -355,7 +376,7 @@ if enable_voice_input:
         console.log("heard:", transcript);
         if (/hey nova|okay nova|okay nova/i.test(transcript)) {
           // notify Streamlit UI by showing alert and focusing input
-          alert("Hey Nova detected! Click 'Send' in PageBuddy to interact or type your prompt.");
+          alert("✨ Hey Nova detected! Paste the detected text into PageBuddy prompt or click Send to continue.");
         }
       };
       recognition.start();

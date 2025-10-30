@@ -2,8 +2,12 @@ import streamlit as st
 import os, json, re
 from components_gemini import (
     load_service_account_from_streamlit_secrets, fetch_url_text, smart_summarize,
-    generate_action_items, export_to_pptx, tts_create_audio_bytes, stt_from_uploaded_bytes
+    generate_action_items, export_to_pptx, _gemini_generate_text, tts_create_audio_bytes, stt_from_uploaded_bytes
 )
+print(_gemini_generate_text("Say: Hello from Gemini", model="gemini-1.5-flash"))
+b = tts_create_audio_bytes("Hello from PageBuddy", language_code="en-IN")
+open("test.mp3", "wb").write(b)
+
 from io import BytesIO
 from PIL import Image
 

@@ -1,5 +1,6 @@
 import streamlit as st
 import os, json, re, time
+import base64
 from io import BytesIO
 from PIL import Image
 from components_gemini import (
@@ -88,10 +89,10 @@ def avatar_svg_html(state="listening", lipsync=False):
 # =========================
 # 😎 Anime Hologram Avatar (Emotion Engine)
 # =========================
-from components_gemini import analyze_emotion, avatar_svg
+from components_gemini import avatar_svg
 
 if "avatar_state" not in st.session_state:
-    st.session_state.avatar_state = "idle"
+    st.session_state.avatar_state = "listening"
 
 avatar_html = avatar_svg(st.session_state.avatar_state)
 st.markdown(avatar_html, unsafe_allow_html=True)
@@ -244,9 +245,7 @@ with right:
             if not resp:
                 resp = "Gemini not available — fallback: " + prompt[:240]
             append("assistant", resp)
-            # call Gemini via components_gemini._gemini_generate_text indirectly
-            from components_gemini import _gemini_generate_text
-            p = f"You are PageBuddy, a hologram anime assistant. Reply in {lang} and style {style}. Keep concise.\n\nUser:\n{prompt}"
+            
             # update avatar emotion
             st.session_state["avatar_state"] = analyze_emotion(resp)
             # show updated avatar and lipsync while speaking (if TTS enabled)
@@ -257,7 +256,7 @@ with right:
                     duration = estimate_audio_duration_seconds(resp)
                     st.markdown(f"<script>const img=document.getElementById('nova_avatar'); if(img){{img.classList.add('lipsync'); setTimeout(()=>img.classList.remove('lipsync'),{int(duration*1000)});}}</script>", unsafe_allow_html=True)
             st.experimental_rerun()
-            st.experimental_rerun()
+           
     st.markdown("</div>", unsafe_allow_html=True)
 if memory_mode:
     st.session_state.setdefault("memory", {})["fav_language"] = lang

@@ -6,8 +6,6 @@ from nltk.tokenize import sent_tokenize
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 from io import BytesIO
-from pptx import Presentation
-from pptx.util import Inches, Pt
 
 # Audio
 import pyttsx3

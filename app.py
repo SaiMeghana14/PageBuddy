@@ -65,11 +65,11 @@ local_css("styles.css")
 def avatar_svg_html(state="listening", lipsync=False):
     # choose svg path based on state
     state_map = {
-        "listening": "avatar/nova_idle.svg",
-        "happy": "avatar/nova_happy.svg",
-        "thinking": "avatar/nova_thinking.svg",
-        "excited": "avatar/nova_excited.svg",
-        "battle": "avatar/nova_battle.svg"
+        "listening": "avatar/nova_idle.png",
+        "happy": "avatar/nova_happy.png",
+        "thinking": "avatar/nova_thinking.png",
+        "excited": "avatar/nova_excited.png",
+        "battle": "avatar/nova_battle.png"
     }
     svg_path = state_map.get(state, state_map["listening"])
     lips_class = "lipsync" if lipsync else ""

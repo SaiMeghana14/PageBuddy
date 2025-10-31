@@ -296,8 +296,8 @@ if enable_voice_input:
       }
     };
 
-    // Wake word via Web Speech API
-    st.markdown("""
+// Wake word via Web Speech API
+st.markdown("""
 <script>
 (function(){
   // This script attaches to your existing wake button id "pb-wake"
@@ -335,8 +335,7 @@ if enable_voice_input:
       recognition.onresult = function(event) {
         const transcript = event.results[event.results.length-1][0].transcript.trim();
         console.log("heard:", transcript);
-        if (/hey nova|okay nova|okay nova/i.test(transcript)) {
-          // notify Streamlit UI by showing alert and focusing input
+        if (/hey nova|okay nova|ok nova/i.test(transcript)) {
           alert("✨ Hey Nova detected! Paste the detected text into PageBuddy prompt or click Send to continue.");
         }
       };
@@ -345,7 +344,10 @@ if enable_voice_input:
       wakeBtn.innerText = "Disable Wake Word";
       status.innerText = "Wake word active (listening)...";
     };
-    </script>
-     """, unsafe_allow_html=True)
+  }
+  ensureWakeControls();
+})();
+</script>
+""", unsafe_allow_html=True)
 
 st.markdown("<div style='height:24px'></div>", unsafe_allow_html=True)

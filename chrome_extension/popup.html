@@ -41,7 +41,7 @@
   </div>
 
   <script>
-    const TARGET_URL = "http://localhost:6006/chrome-page"; // change when deployed
+    const TARGET_URL = "https://pagebuddy-backend.onrender.com/chrome-page"; 
     const sendBtn = document.getElementById('send');
     const img = document.getElementById('nova_img');
     const reaction = document.getElementById('reaction');
@@ -74,7 +74,7 @@
           const res = await fetch(TARGET_URL, {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({content:text, url: tab.url, language: lang})
+            body: JSON.stringify({content:text, url: tab.url})
           });
           if (res.ok) {
             showReaction("Sent ✅", 1400);

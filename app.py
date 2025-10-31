@@ -12,7 +12,7 @@ try:
         load_service_account_from_streamlit_secrets, fetch_url_text, smart_summarize,
         generate_action_items, _gemini_generate_text, tts_create_audio_bytes,
         stt_from_uploaded_bytes, analyze_emotion, estimate_audio_duration_seconds,
-        generate_flashcards, generate_todos, translate_text
+        generate_flashcards, generate_todos, translate_text, export_to_pptx, render_avatar
     )
     COMPONENTS_OK = True
 except Exception as e:

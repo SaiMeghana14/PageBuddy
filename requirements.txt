@@ -10,3 +10,4 @@ google-generativeai
 streamlit-ace
 scikit-learn
 python-dotenv
+python-pptx

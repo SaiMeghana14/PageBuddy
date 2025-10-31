@@ -26,22 +26,22 @@ st.write("Has STREAMLIT secrets loaded?",
 st.write("Env key check:",
          os.environ.get("GOOGLE_API_KEY", "Not set"))
     # Fallbacks to avoid app crash; functionality will be limited
-    def load_service_account_from_streamlit_secrets(x): return False
-    def fetch_url_text(url): return f"ERROR_FETCH: fetch_url_text not available ({url})"
-    def smart_summarize(text, **kw): return text[:800]
-    def generate_action_items(text, **kw): return "- (action items not available)"
-    def export_to_pptx(title, bullets, actions): return None
-    def _gemini_generate_text(prompt, **kw): return "Gemini not configured (fallback)."
-    def tts_create_audio_bytes(text, language_code="en-IN"): return None
-    def stt_from_uploaded_bytes(b, language="en-IN"): return "ERROR_STT: local fallback"
-    def analyze_emotion(text): return "listening"
-    def estimate_audio_duration_seconds(text): return max(1.0, len(text)/18.0)
-    def generate_flashcards(text, **kw): return []
-    def generate_todos(text, **kw): return []
-    def translate_text(text, **kw): return text
-    def render_avatar(state="listening"):
-        img = f"avatar/nova_idle.png" if state in ("idle","listening") else f"avatar/nova_{state}.png"
-        return f'<div><img id="nova_avatar" src="{img}" class="holo-avatar" width="160"/></div>'
+def load_service_account_from_streamlit_secrets(x): return False
+def fetch_url_text(url): return f"ERROR_FETCH: fetch_url_text not available ({url})"
+def smart_summarize(text, **kw): return text[:800]
+def generate_action_items(text, **kw): return "- (action items not available)"
+def export_to_pptx(title, bullets, actions): return None
+def _gemini_generate_text(prompt, **kw): return "Gemini not configured (fallback)."
+def tts_create_audio_bytes(text, language_code="en-IN"): return None
+def stt_from_uploaded_bytes(b, language="en-IN"): return "ERROR_STT: local fallback"
+def analyze_emotion(text): return "listening"
+def estimate_audio_duration_seconds(text): return max(1.0, len(text)/18.0)
+def generate_flashcards(text, **kw): return []
+def generate_todos(text, **kw): return []
+def translate_text(text, **kw): return text
+def render_avatar(state="listening"):
+    img = f"avatar/nova_idle.png" if state in ("idle","listening") else f"avatar/nova_{state}.png"
+    return f'<div><img id="nova_avatar" src="{img}" class="holo-avatar" width="160"/></div>'
 
 # -------------------------
 # Config & environment

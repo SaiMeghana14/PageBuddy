@@ -260,7 +260,7 @@ if not st.session_state.show_app:
     if qp.get("__launch") == ["1"]:
         st.session_state.show_app = True
         # clean the query param for next reload
-        st.experimental_set_query_params()
+        st.query_params()
         st.experimental_rerun()
     # Also render a server button as reliable fallback
     if st.button("Activate Nova"):

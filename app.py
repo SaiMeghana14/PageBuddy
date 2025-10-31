@@ -489,7 +489,7 @@ if enable_voice_input:
 
     <script>
     (function(){
-      const FLASK_BASE = "FLASK_BASE_PLACEHOLDER";
+      FLASK_BASE = f"{FLASK_API_BASE}"
       const recordBtn = document.getElementById("pb-record");
       const wakeBtn = document.getElementById("pb-wake");
       const status = document.getElementById("pb-status");

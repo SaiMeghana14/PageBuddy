@@ -256,18 +256,18 @@ landing_html = """
 if not st.session_state.show_app:
     st.markdown(landing_html, unsafe_allow_html=True)
     # server-side "Activate Nova" fallback: query param detection
-    qp = st.experimental_get_query_params()
+    qp = st.query_params
     if qp.get("__launch") == ["1"]:
         st.session_state.show_app = True
-        # clean the query param for next reload
-        st.query_params()
-        st.experimental_rerun()
-    # Also render a server button as reliable fallback
+        st.query_params.clear()
+        st.rerun()
+    
+    # Also render reliable server button
     if st.button("Activate Nova"):
         st.session_state.show_app = True
-        st.experimental_rerun()
-    # stop here when landing is shown
-    st.stop()
+        st.rerun()
+    
+    st.stop()  # stop rendering landing page
 
 # -------------------------
 # MAIN APP UI (PageBuddy) - shown after Activate Nova

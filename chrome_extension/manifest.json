@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "PageBuddy Connector",
   "version": "1.0",
-  "permissions": ["activeTab","scripting","storage"],
+  "permissions": ["activeTab","tabs","scripting","storage"],
   "host_permissions": ["<all_urls>"],
   "action": {
     "default_popup": "popup.html",

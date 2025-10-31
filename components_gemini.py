@@ -5,6 +5,8 @@ import nltk
 from nltk.tokenize import sent_tokenize
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
+import io
+import logging
 from io import BytesIO
 
 # Audio
@@ -76,6 +78,11 @@ def fetch_url_text(url: str) -> str:
         return soup.get_text(separator="\n", strip=True)
     except Exception:
         return ""
+        
+def extract_text_from_url(url: str) -> str:
+    """Compatibility wrapper for older function name."""
+    return fetch_url_text(url)
+
 # ----------------- Gemini wrapper -----------------
 def _gemini_generate_text(prompt, model="gemini-1.5-flash", max_output_tokens=400, temperature=0.2):
     """Return string or None if unavailable."""
@@ -85,6 +92,7 @@ def _gemini_generate_text(prompt, model="gemini-1.5-flash", max_output_tokens=40
             if isinstance(resp, dict):
                 return resp.get("candidates",[{}])[0].get("content","").strip()
             return getattr(resp, "text", getattr(resp, "content", str(resp))).strip()
+
         elif GEN_CLIENT == "vertexai":
             from vertexai import language as vlang
             model_obj = vlang.TextGenerationModel.from_pretrained(model)

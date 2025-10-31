@@ -18,46 +18,7 @@ print("PageBuddy backend ready ✅")
 
 # ---------- Constants ----------
 PAGEBUDDY_PORT = int(os.environ.get("PAGEBUDDY_PORT", "6006"))
-FLASK_API_BASE = f"http://localhost:{PAGEBUDDY_PORT}"
-
-# =========================
-# 🔌 Flask Microserver for Chrome Extension
-# =========================
-from flask import Flask, request, jsonify
-import threading, uuid, hashlib
-
-app_flask = Flask("pagebuddy_api")
-
-@app_flask.route("/chrome-page", methods=["POST"])
-def chrome_page():
-    try:
-        data = request.json
-        content = data.get("content","")
-        url = data.get("url","")
-        st.session_state["chrome_content"] = content
-        st.session_state["chrome_url"] = url
-        return jsonify({"status":"ok"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@app_flask.route("/upload-audio", methods=["POST"])
-def upload_audio():
-    try:
-        audio_b64 = request.json.get("audio_b64")
-        language = request.json.get("language","en-IN")
-        if not audio_b64:
-            return jsonify({"error":"no audio"}), 400
-        audio_bytes = base64.b64decode(audio_b64.split(",")[-1])
-        text = stt_from_uploaded_bytes(audio_bytes, language=language)
-        return jsonify({"text": text}), 200
-    except Exception as e:
-        return jsonify({"error":str(e)}), 500
-
-def run_flask():
-    app_flask.run(host="0.0.0.0", port=PAGEBUDDY_PORT, debug=False, use_reloader=False)
-
-# start Flask in background
-threading.Thread(target=run_flask, daemon=True).start()
+FLASK_API_BASE = "https://pagebuddy-backend.onrender.com"
 
 # ---------- Streamlit UI ----------
 st.set_page_config(page_title="PageBuddy — NOVA", layout="wide", page_icon="🤖")

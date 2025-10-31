@@ -14,17 +14,17 @@ try:
         stt_from_uploaded_bytes, analyze_emotion, estimate_audio_duration_seconds,
         generate_flashcards, generate_todos, translate_text, export_to_pptx, render_avatar
     )
-st.write("Has STREAMLIT secrets loaded?",
-         "✅ Yes" if "gemini_api_key" in st.secrets else "❌ No")
-st.write("Env key check:",
-         os.environ.get("GOOGLE_API_KEY", "Not set"))
     COMPONENTS_OK = True
 except Exception as e:
     COMPONENTS_OK = False
     _import_err = str(e)
 if not COMPONENTS_OK:
     st.warning(f"⚠️ Using fallback — components_gemini missing or failed: {_import_err}")
-
+    
+st.write("Has STREAMLIT secrets loaded?",
+         "✅ Yes" if "gemini_api_key" in st.secrets else "❌ No")
+st.write("Env key check:",
+         os.environ.get("GOOGLE_API_KEY", "Not set"))
     # Fallbacks to avoid app crash; functionality will be limited
     def load_service_account_from_streamlit_secrets(x): return False
     def fetch_url_text(url): return f"ERROR_FETCH: fetch_url_text not available ({url})"
